@@ -51,5 +51,57 @@
             Продолжить тренировку
         </a>
     </div>
+    
+    <div class="mt-8 bg-red-50 border-2 border-red-200 rounded-xl p-6 text-center">
+        <p class="text-gray-600 mb-4">Хочешь начать заново? Это удалит все результаты, статистику и достижения.</p>
+        <button id="reset-btn" class="bg-red-600 text-white font-bold py-3 px-6 rounded-full hover:bg-red-700 transition">
+            ♻ Сбросить прогресс
+        </button>
+    </div>
 </div>
+
+<div id="reset-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-xl p-8 max-w-md mx-4">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">Ты уверен?</h2>
+        <p class="text-gray-600 mb-6">Весь прогресс будет удалён. Это действие нельзя отменить.</p>
+        <div class="flex space-x-4">
+            <button id="cancel-reset" class="flex-1 bg-gray-200 text-gray-700 font-bold py-3 rounded-full hover:bg-gray-300 transition">
+                Отмена
+            </button>
+            <button id="confirm-reset" class="flex-1 bg-red-600 text-white font-bold py-3 rounded-full hover:bg-red-700 transition">
+                Да, сбросить
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('reset-btn').addEventListener('click', function() {
+    document.getElementById('reset-modal').classList.remove('hidden');
+});
+
+document.getElementById('cancel-reset').addEventListener('click', function() {
+    document.getElementById('reset-modal').classList.add('hidden');
+});
+
+document.getElementById('confirm-reset').addEventListener('click', function() {
+    const btn = this;
+    btn.disabled = true;
+    btn.textContent = 'Сбрасываю...';
+    
+    fetch('/api/progress/reset', { method: 'POST' })
+        .then(response => {
+            if (!response.ok) throw new Error('Reset failed');
+            return response.json();
+        })
+        .then(() => {
+            window.location.reload();
+        })
+        .catch(() => {
+            btn.disabled = false;
+            btn.textContent = 'Да, сбросить';
+            alert('Не получилось сбросить. Попробуй ещё раз.');
+        });
+});
+</script>
 {% endblock %}

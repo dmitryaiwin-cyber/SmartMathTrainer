@@ -41,6 +41,14 @@ function getSoundEnabled() {
     return soundToggle ? soundToggle.checked : true;
 }
 
+// Feedback display delays (ms), configurable on the settings page
+function getFeedbackDelays() {
+    return {
+        correct: parseInt(localStorage.getItem('feedbackDelayCorrect')) || 1500,
+        wrong: parseInt(localStorage.getItem('feedbackDelayWrong')) || 1000
+    };
+}
+
 // Web Speech API for reading questions
 function speakQuestion(left, right, answer) {
     if (!('speechSynthesis' in window)) return;
@@ -65,6 +73,22 @@ document.addEventListener('DOMContentLoaded', function() {
         if (savedSoundEnabled !== null) {
             soundToggle.checked = savedSoundEnabled === 'true';
         }
+    }
+    
+    const delayCorrect = document.getElementById('delay-correct');
+    if (delayCorrect) {
+        delayCorrect.value = localStorage.getItem('feedbackDelayCorrect') || '1500';
+        delayCorrect.addEventListener('change', function() {
+            localStorage.setItem('feedbackDelayCorrect', this.value);
+        });
+    }
+    
+    const delayWrong = document.getElementById('delay-wrong');
+    if (delayWrong) {
+        delayWrong.value = localStorage.getItem('feedbackDelayWrong') || '1000';
+        delayWrong.addEventListener('change', function() {
+            localStorage.setItem('feedbackDelayWrong', this.value);
+        });
     }
 });
 

@@ -183,9 +183,11 @@ document.getElementById('answer-form').addEventListener('submit', function(e) {
                 window.location.href = `/result/{{ session_id }}`;
             }, 1500);
         } else {
+            const delays = getFeedbackDelays();
+            const delay = html.includes('Неверно') ? delays.wrong : delays.correct;
             setTimeout(() => {
                 loadNextQuestion();
-            }, 1500);
+            }, delay);
         }
     })
     .catch(error => {
