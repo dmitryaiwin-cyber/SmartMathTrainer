@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Exec(alembic revision)",
+      "Exec(pip install)",
+      "Exec(.\\venv\\Scripts\\python.exe)"
+    ]
+  }
+}

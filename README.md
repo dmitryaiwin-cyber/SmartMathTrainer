@@ -60,6 +60,14 @@ docker-compose up --build
 
 Приложение будет доступно по адресу http://localhost:8000
 
+`SECRET_KEY` берётся из `.env` (Compose подставляет его через `${SECRET_KEY}`). На сервере задайте реальный случайный ключ:
+
+```bash
+python -c "import secrets; print(secrets.token_hex(32))"
+```
+
+База данных хранится в named volume `app_data` и сохраняется между пересборками контейнера.
+
 ## Тестирование
 
 Сначала установите dev-зависимости:

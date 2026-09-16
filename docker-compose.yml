@@ -5,7 +5,7 @@ services:
       - "8000:8000"
     environment:
       - DATABASE_URL=sqlite:////app/db/math_project.db
-      - SECRET_KEY=production-secret-key-change-this
+      - SECRET_KEY=${SECRET_KEY:-dev-secret-key-change-in-production}
       - DEBUG=False
     volumes:
       - app_data:/app/db
