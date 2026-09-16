@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Таблица умножения{% endblock %}</title>
+    <meta name="description" content="Тренируй таблицу умножения, решай примеры, исправляй ошибки и отслеживай свой прогресс.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        .pulse {
+            animation: pulse 0.3s ease-in-out;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen">
+    <header class="bg-white shadow-md">
+        <nav class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <a href="/" class="text-2xl font-bold text-purple-600 hover:text-purple-700 transition">
+                    🧮 Таблица умножения
+                </a>
+                
+                <div class="hidden md:flex space-x-6">
+                    <a href="/train" class="text-gray-700 hover:text-purple-600 transition font-medium">Тренировка</a>
+                    <a href="/progress" class="text-gray-700 hover:text-purple-600 transition font-medium">Прогресс</a>
+                    <a href="/table" class="text-gray-700 hover:text-purple-600 transition font-medium">Таблица</a>
+                    <a href="/settings" class="text-gray-700 hover:text-purple-600 transition font-medium">Настройки</a>
+                </div>
+                
+                <button id="mobile-menu-btn" class="md:hidden text-gray-700 focus:outline-none" aria-label="Меню">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div id="mobile-menu" class="hidden md:hidden mt-4 space-y-2">
+                <a href="/train" class="block py-2 text-gray-700 hover:text-purple-600 transition font-medium">Тренировка</a>
+                <a href="/progress" class="block py-2 text-gray-700 hover:text-purple-600 transition font-medium">Прогресс</a>
+                <a href="/table" class="block py-2 text-gray-700 hover:text-purple-600 transition font-medium">Таблица</a>
+                <a href="/settings" class="block py-2 text-gray-700 hover:text-purple-600 transition font-medium">Настройки</a>
+            </div>
+        </nav>
+    </header>
+    
+    <main class="container mx-auto px-4 py-8">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <footer class="bg-white mt-12 py-6 shadow-inner">
+        <div class="container mx-auto px-4 text-center text-gray-600">
+            <p>© 2026 Таблица умножения — учимся играючи by Дмитрий Петернёв</p>
+        </div>
+    </footer>
+    
+    <script src="/static/js/main.js"></script>
+    <script>
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+    </script>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>

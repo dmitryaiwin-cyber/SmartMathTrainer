@@ -1,0 +1,15 @@
+<div id="feedback" class="text-center mt-6 fade-in">
+    {% if result.is_correct %}
+    <div class="bg-green-100 border-2 border-green-500 rounded-xl p-6 pulse">
+        <div class="text-4xl mb-2">✓</div>
+        <div class="text-2xl font-bold text-green-700">Правильно!</div>
+        <div class="text-green-600 mt-2">+{{ result.score }} очков</div>
+    </div>
+    {% else %}
+    <div class="bg-red-100 border-2 border-red-500 rounded-xl p-6 shake">
+        <div class="text-4xl mb-2">✕</div>
+        <div class="text-2xl font-bold text-red-700">Неверно</div>
+        <div class="text-red-600 mt-2">{{ result.feedback }}</div>
+    </div>
+    {% endif %}
+</div>

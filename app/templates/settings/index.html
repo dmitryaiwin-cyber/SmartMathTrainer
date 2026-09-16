@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Настройки{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <h1 class="text-3xl font-bold text-gray-800 mb-8 text-center">Настройки</h1>
+    
+    <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">🔊 Звуки</h2>
+        <label class="flex items-center cursor-pointer">
+            <input type="checkbox" id="sound-toggle" class="sr-only peer" checked>
+            <div class="relative w-14 h-8 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-7 after:w-7 after:transition-all peer-checked:bg-purple-600"></div>
+            <span class="ml-3 text-gray-700 font-medium">Включить звуковые эффекты</span>
+        </label>
+    </div>
+    
+    <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">🎨 Тема</h2>
+        <div class="flex space-x-4">
+            <label class="flex items-center cursor-pointer">
+                <input type="radio" name="theme" value="light" class="sr-only peer" checked>
+                <span class="bg-purple-100 text-purple-700 px-4 py-2 rounded-lg peer-checked:bg-purple-600 peer-checked:text-white font-medium">Светлая</span>
+            </label>
+            <label class="flex items-center cursor-pointer">
+                <input type="radio" name="theme" value="dark" class="sr-only peer">
+                <span class="bg-purple-100 text-purple-700 px-4 py-2 rounded-lg peer-checked:bg-purple-600 peer-checked:text-white font-medium">Тёмная</span>
+            </label>
+        </div>
+    </div>
+    
+    <div class="bg-red-50 border-2 border-red-200 rounded-xl p-6">
+        <h2 class="text-xl font-bold text-red-700 mb-4">♻ Сбросить прогресс</h2>
+        <p class="text-gray-600 mb-4">Это действие удалит все твои результаты, статистику и достижения. Это нельзя отменить.</p>
+        <button id="reset-btn" class="bg-red-600 text-white font-bold py-3 px-6 rounded-full hover:bg-red-700 transition">
+            Сбросить прогресс
+        </button>
+    </div>
+    
+    <div id="reset-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-8 max-w-md mx-4">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Ты уверен?</h2>
+            <p class="text-gray-600 mb-6">Весь прогресс будет удалён. Это действие нельзя отменить.</p>
+            <div class="flex space-x-4">
+                <button id="cancel-reset" class="flex-1 bg-gray-200 text-gray-700 font-bold py-3 rounded-full hover:bg-gray-300 transition">
+                    Отмена
+                </button>
+                <button id="confirm-reset" class="flex-1 bg-red-600 text-white font-bold py-3 rounded-full hover:bg-red-700 transition">
+                    Да, сбросить
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('reset-btn').addEventListener('click', function() {
+    document.getElementById('reset-modal').classList.remove('hidden');
+});
+
+document.getElementById('cancel-reset').addEventListener('click', function() {
+    document.getElementById('reset-modal').classList.add('hidden');
+});
+
+document.getElementById('confirm-reset').addEventListener('click', function() {
+    fetch('/api/progress/reset', { method: 'POST' })
+        .then(response => response.json())
+        .then(data => {
+            alert('Прогресс сброшен!');
+            document.getElementById('reset-modal').classList.add('hidden');
+            window.location.href = '/';
+        });
+});
+</script>
+{% endblock %}

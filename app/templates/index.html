@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Таблица умножения — учимся играючи{% endblock %}
+
+{% block content %}
+<div class="text-center mb-12 fade-in">
+    <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+        Научись умножать легко!
+    </h1>
+    <p class="text-xl text-gray-600 mb-8">
+        Тренируйся, отвечай быстрее и открывай новые достижения.
+    </p>
+    <a href="/train" class="inline-block bg-purple-600 text-white text-xl font-bold py-4 px-8 rounded-full hover:bg-purple-700 transition transform hover:scale-105 shadow-lg">
+        Начать тренировку
+    </a>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+    <a href="/train" class="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition transform hover:-translate-y-1 fade-in" style="animation-delay: 0.1s">
+        <div class="text-4xl mb-4">🎯</div>
+        <h2 class="text-2xl font-bold text-gray-800 mb-2">Тренировка</h2>
+        <p class="text-gray-600">Обычная практика. Выбери таблицы и начни!</p>
+    </a>
+    
+    <a href="/train?mode=timed" class="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition transform hover:-translate-y-1 fade-in" style="animation-delay: 0.2s">
+        <div class="text-4xl mb-4">⏱</div>
+        <h2 class="text-2xl font-bold text-gray-800 mb-2">На время</h2>
+        <p class="text-gray-600">Решай примеры за ограниченное время.</p>
+    </a>
+    
+    <a href="/train?mode=mistakes" class="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition transform hover:-translate-y-1 fade-in" style="animation-delay: 0.3s">
+        <div class="text-4xl mb-4">🔥</div>
+        <h2 class="text-2xl font-bold text-gray-800 mb-2">Мои ошибки</h2>
+        <p class="text-gray-600">Повторяй примеры, где были ошибки.</p>
+    </a>
+    
+    <a href="/train?mode=challenge" class="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition transform hover:-translate-y-1 fade-in" style="animation-delay: 0.4s">
+        <div class="text-4xl mb-4">🏆</div>
+        <h2 class="text-2xl font-bold text-gray-800 mb-2">Испытание</h2>
+        <p class="text-gray-600">Проверь свои знания в настоящем тесте.</p>
+    </a>
+    
+    <a href="/table" class="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition transform hover:-translate-y-1 fade-in" style="animation-delay: 0.5s">
+        <div class="text-4xl mb-4">📚</div>
+        <h2 class="text-2xl font-bold text-gray-800 mb-2">Таблица</h2>
+        <p class="text-gray-600">Изучи таблицу умножения.</p>
+    </a>
+    
+    <a href="/progress" class="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition transform hover:-translate-y-1 fade-in" style="animation-delay: 0.6s">
+        <div class="text-4xl mb-4">📊</div>
+        <h2 class="text-2xl font-bold text-gray-800 mb-2">Прогресс</h2>
+        <p class="text-gray-600">Посмотри свои результаты и достижения.</p>
+    </a>
+</div>
+{% endblock %}
