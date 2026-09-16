@@ -45,7 +45,7 @@ function getSoundEnabled() {
 function getFeedbackDelays() {
     return {
         correct: parseInt(localStorage.getItem('feedbackDelayCorrect')) || 500,
-        wrong: parseInt(localStorage.getItem('feedbackDelayWrong')) || 1000
+        wrong: parseInt(localStorage.getItem('feedbackDelayWrong')) || 2000
     };
 }
 
@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     const delayWrong = document.getElementById('delay-wrong');
     if (delayWrong) {
-        delayWrong.value = localStorage.getItem('feedbackDelayWrong') || '1000';
+        delayWrong.value = localStorage.getItem('feedbackDelayWrong') || '2000';
         delayWrong.addEventListener('change', function() {
             localStorage.setItem('feedbackDelayWrong', this.value);
         });
