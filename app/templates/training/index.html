@@ -1,0 +1,524 @@
+{% extends "base.html" %}
+
+{% block title %}Выбор тренировки{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+    <h1 class="text-3xl font-bold text-gray-800 mb-8 text-center">Выбери режим тренировки</h1>
+    
+    <div class="space-y-4">
+        <!-- Practice Mode (default) -->
+        <div class="bg-white rounded-2xl shadow-lg p-6" id="practice-section">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">🎯 Обычная тренировка</h2>
+            <p class="text-gray-600 mb-6">Выбери таблицы умножения и количество вопросов.</p>
+            
+            <form id="training-form">
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-medium mb-3">Выбери таблицы:</label>
+                    <div class="grid grid-cols-5 gap-3">
+                        <label class="flex items-center justify-center bg-purple-100 rounded-lg p-3 cursor-pointer hover:bg-purple-200 transition">
+                            <input type="checkbox" name="tables" value="2" class="sr-only peer">
+                            <span class="text-2xl font-bold text-purple-700 peer-checked:bg-purple-600 peer-checked:text-white rounded-lg w-12 h-12 flex items-center justify-center">2</span>
+                        </label>
+                        <label class="flex items-center justify-center bg-purple-100 rounded-lg p-3 cursor-pointer hover:bg-purple-200 transition">
+                            <input type="checkbox" name="tables" value="3" class="sr-only peer">
+                            <span class="text-2xl font-bold text-purple-700 peer-checked:bg-purple-600 peer-checked:text-white rounded-lg w-12 h-12 flex items-center justify-center">3</span>
+                        </label>
+                        <label class="flex items-center justify-center bg-purple-100 rounded-lg p-3 cursor-pointer hover:bg-purple-200 transition">
+                            <input type="checkbox" name="tables" value="4" class="sr-only peer">
+                            <span class="text-2xl font-bold text-purple-700 peer-checked:bg-purple-600 peer-checked:text-white rounded-lg w-12 h-12 flex items-center justify-center">4</span>
+                        </label>
+                        <label class="flex items-center justify-center bg-purple-100 rounded-lg p-3 cursor-pointer hover:bg-purple-200 transition">
+                            <input type="checkbox" name="tables" value="5" class="sr-only peer">
+                            <span class="text-2xl font-bold text-purple-700 peer-checked:bg-purple-600 peer-checked:text-white rounded-lg w-12 h-12 flex items-center justify-center">5</span>
+                        </label>
+                        <label class="flex items-center justify-center bg-purple-100 rounded-lg p-3 cursor-pointer hover:bg-purple-200 transition">
+                            <input type="checkbox" name="tables" value="6" class="sr-only peer">
+                            <span class="text-2xl font-bold text-purple-700 peer-checked:bg-purple-600 peer-checked:text-white rounded-lg w-12 h-12 flex items-center justify-center">6</span>
+                        </label>
+                        <label class="flex items-center justify-center bg-purple-100 rounded-lg p-3 cursor-pointer hover:bg-purple-200 transition">
+                            <input type="checkbox" name="tables" value="7" class="sr-only peer">
+                            <span class="text-2xl font-bold text-purple-700 peer-checked:bg-purple-600 peer-checked:text-white rounded-lg w-12 h-12 flex items-center justify-center">7</span>
+                        </label>
+                        <label class="flex items-center justify-center bg-purple-100 rounded-lg p-3 cursor-pointer hover:bg-purple-200 transition">
+                            <input type="checkbox" name="tables" value="8" class="sr-only peer">
+                            <span class="text-2xl font-bold text-purple-700 peer-checked:bg-purple-600 peer-checked:text-white rounded-lg w-12 h-12 flex items-center justify-center">8</span>
+                        </label>
+                        <label class="flex items-center justify-center bg-purple-100 rounded-lg p-3 cursor-pointer hover:bg-purple-200 transition">
+                            <input type="checkbox" name="tables" value="9" class="sr-only peer">
+                            <span class="text-2xl font-bold text-purple-700 peer-checked:bg-purple-600 peer-checked:text-white rounded-lg w-12 h-12 flex items-center justify-center">9</span>
+                        </label>
+                    </div>
+                    <button type="button" id="select-all" class="mt-3 text-purple-600 hover:text-purple-700 font-medium text-sm">
+                        Выбрать все
+                    </button>
+                </div>
+                
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-medium mb-3">Количество вопросов:</label>
+                    <div class="flex space-x-4">
+                        <label class="flex items-center bg-purple-100 rounded-lg p-3 cursor-pointer hover:bg-purple-200 transition">
+                            <input type="radio" name="question_count" value="10" class="sr-only peer" checked>
+                            <span class="text-lg font-bold text-purple-700 peer-checked:bg-purple-600 peer-checked:text-white rounded-lg px-4 py-2">10</span>
+                        </label>
+                        <label class="flex items-center bg-purple-100 rounded-lg p-3 cursor-pointer hover:bg-purple-200 transition">
+                            <input type="radio" name="question_count" value="20" class="sr-only peer">
+                            <span class="text-lg font-bold text-purple-700 peer-checked:bg-purple-600 peer-checked:text-white rounded-lg px-4 py-2">20</span>
+                        </label>
+                        <label class="flex items-center bg-purple-100 rounded-lg p-3 cursor-pointer hover:bg-purple-200 transition">
+                            <input type="radio" name="question_count" value="30" class="sr-only peer">
+                            <span class="text-lg font-bold text-purple-700 peer-checked:bg-purple-600 peer-checked:text-white rounded-lg px-4 py-2">30</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <button type="submit" class="w-full bg-purple-600 text-white text-xl font-bold py-4 rounded-full hover:bg-purple-700 transition transform hover:scale-105 shadow-lg">
+                    Начать тренировку
+                </button>
+            </form>
+            
+            <div id="error-message" class="hidden mt-4 bg-red-100 border-2 border-red-500 rounded-xl p-4 text-red-700"></div>
+        </div>
+        
+        <!-- Timed Mode -->
+        <div class="bg-white rounded-2xl shadow-lg p-6" id="timed-section" style="display: none;">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">⏱ На время</h2>
+            <p class="text-gray-600 mb-6">Решай примеры за ограниченное время. Чем быстрее, тем лучше!</p>
+            
+            <div class="mb-6">
+                <label class="block text-gray-700 font-medium mb-3">Выбери таблицы:</label>
+                <div class="grid grid-cols-5 gap-3">
+                    <label class="flex items-center justify-center bg-orange-100 rounded-lg p-3 cursor-pointer hover:bg-orange-200 transition">
+                        <input type="checkbox" name="timed_tables" value="2" class="sr-only peer" checked>
+                        <span class="text-2xl font-bold text-orange-700 peer-checked:bg-orange-600 peer-checked:text-white rounded-lg w-12 h-12 flex items-center justify-center">2</span>
+                    </label>
+                    <label class="flex items-center justify-center bg-orange-100 rounded-lg p-3 cursor-pointer hover:bg-orange-200 transition">
+                        <input type="checkbox" name="timed_tables" value="3" class="sr-only peer" checked>
+                        <span class="text-2xl font-bold text-orange-700 peer-checked:bg-orange-600 peer-checked:text-white rounded-lg w-12 h-12 flex items-center justify-center">3</span>
+                    </label>
+                    <label class="flex items-center justify-center bg-orange-100 rounded-lg p-3 cursor-pointer hover:bg-orange-200 transition">
+                        <input type="checkbox" name="timed_tables" value="4" class="sr-only peer" checked>
+                        <span class="text-2xl font-bold text-orange-700 peer-checked:bg-orange-600 peer-checked:text-white rounded-lg w-12 h-12 flex items-center justify-center">4</span>
+                    </label>
+                    <label class="flex items-center justify-center bg-orange-100 rounded-lg p-3 cursor-pointer hover:bg-orange-200 transition">
+                        <input type="checkbox" name="timed_tables" value="5" class="sr-only peer" checked>
+                        <span class="text-2xl font-bold text-orange-700 peer-checked:bg-orange-600 peer-checked:text-white rounded-lg w-12 h-12 flex items-center justify-center">5</span>
+                    </label>
+                    <label class="flex items-center justify-center bg-orange-100 rounded-lg p-3 cursor-pointer hover:bg-orange-200 transition">
+                        <input type="checkbox" name="timed_tables" value="6" class="sr-only peer">
+                        <span class="text-2xl font-bold text-orange-700 peer-checked:bg-orange-600 peer-checked:text-white rounded-lg w-12 h-12 flex items-center justify-center">6</span>
+                    </label>
+                    <label class="flex items-center justify-center bg-orange-100 rounded-lg p-3 cursor-pointer hover:bg-orange-200 transition">
+                        <input type="checkbox" name="timed_tables" value="7" class="sr-only peer">
+                        <span class="text-2xl font-bold text-orange-700 peer-checked:bg-orange-600 peer-checked:text-white rounded-lg w-12 h-12 flex items-center justify-center">7</span>
+                    </label>
+                    <label class="flex items-center justify-center bg-orange-100 rounded-lg p-3 cursor-pointer hover:bg-orange-200 transition">
+                        <input type="checkbox" name="timed_tables" value="8" class="sr-only peer">
+                        <span class="text-2xl font-bold text-orange-700 peer-checked:bg-orange-600 peer-checked:text-white rounded-lg w-12 h-12 flex items-center justify-center">8</span>
+                    </label>
+                    <label class="flex items-center justify-center bg-orange-100 rounded-lg p-3 cursor-pointer hover:bg-orange-200 transition">
+                        <input type="checkbox" name="timed_tables" value="9" class="sr-only peer">
+                        <span class="text-2xl font-bold text-orange-700 peer-checked:bg-orange-600 peer-checked:text-white rounded-lg w-12 h-12 flex items-center justify-center">9</span>
+                    </label>
+                </div>
+                <button type="button" id="select-all-timed" class="mt-3 text-orange-600 hover:text-orange-700 font-medium text-sm">
+                    Выбрать все
+                </button>
+            </div>
+            
+            <div class="mb-6">
+                <label class="block text-gray-700 font-medium mb-3">Выбери время:</label>
+                <div class="grid grid-cols-3 gap-4">
+                    <button onclick="startTimedMode(30)" class="bg-orange-100 text-orange-700 py-4 rounded-xl hover:bg-orange-200 transition font-bold text-xl">
+                        30 сек
+                    </button>
+                    <button onclick="startTimedMode(60)" class="bg-orange-100 text-orange-700 py-4 rounded-xl hover:bg-orange-200 transition font-bold text-xl">
+                        60 сек
+                    </button>
+                    <button onclick="startTimedMode(120)" class="bg-orange-100 text-orange-700 py-4 rounded-xl hover:bg-orange-200 transition font-bold text-xl">
+                        120 сек
+                    </button>
+                </div>
+            </div>
+            
+            <button onclick="showPracticeMode()" class="w-full bg-gray-200 text-gray-700 py-3 rounded-full hover:bg-gray-300 transition">
+                ← Назад к выбору режима
+            </button>
+        </div>
+        
+        <!-- Mistakes Mode -->
+        <div class="bg-white rounded-2xl shadow-lg p-6" id="mistakes-section" style="display: none;">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">🔥 Мои ошибки</h2>
+            <p class="text-gray-600 mb-6">Повторяй примеры, где были ошибки. Чем больше ошибок, тем чаще встречается пример.</p>
+            
+            <div class="mb-6">
+                <label class="block text-gray-700 font-medium mb-3">Выбери таблицы для повторения:</label>
+                <div class="grid grid-cols-5 gap-3">
+                    <label class="flex items-center justify-center bg-red-100 rounded-lg p-3 cursor-pointer hover:bg-red-200 transition">
+                        <input type="checkbox" name="mistakes_tables" value="2" class="sr-only peer" checked>
+                        <span class="text-2xl font-bold text-red-700 peer-checked:bg-red-600 peer-checked:text-white rounded-lg w-12 h-12 flex items-center justify-center">2</span>
+                    </label>
+                    <label class="flex items-center justify-center bg-red-100 rounded-lg p-3 cursor-pointer hover:bg-red-200 transition">
+                        <input type="checkbox" name="mistakes_tables" value="3" class="sr-only peer" checked>
+                        <span class="text-2xl font-bold text-red-700 peer-checked:bg-red-600 peer-checked:text-white rounded-lg w-12 h-12 flex items-center justify-center">3</span>
+                    </label>
+                    <label class="flex items-center justify-center bg-red-100 rounded-lg p-3 cursor-pointer hover:bg-red-200 transition">
+                        <input type="checkbox" name="mistakes_tables" value="4" class="sr-only peer" checked>
+                        <span class="text-2xl font-bold text-red-700 peer-checked:bg-red-600 peer-checked:text-white rounded-lg w-12 h-12 flex items-center justify-center">4</span>
+                    </label>
+                    <label class="flex items-center justify-center bg-red-100 rounded-lg p-3 cursor-pointer hover:bg-red-200 transition">
+                        <input type="checkbox" name="mistakes_tables" value="5" class="sr-only peer" checked>
+                        <span class="text-2xl font-bold text-red-700 peer-checked:bg-red-600 peer-checked:text-white rounded-lg w-12 h-12 flex items-center justify-center">5</span>
+                    </label>
+                    <label class="flex items-center justify-center bg-red-100 rounded-lg p-3 cursor-pointer hover:bg-red-200 transition">
+                        <input type="checkbox" name="mistakes_tables" value="6" class="sr-only peer">
+                        <span class="text-2xl font-bold text-red-700 peer-checked:bg-red-600 peer-checked:text-white rounded-lg w-12 h-12 flex items-center justify-center">6</span>
+                    </label>
+                    <label class="flex items-center justify-center bg-red-100 rounded-lg p-3 cursor-pointer hover:bg-red-200 transition">
+                        <input type="checkbox" name="mistakes_tables" value="7" class="sr-only peer">
+                        <span class="text-2xl font-bold text-red-700 peer-checked:bg-red-600 peer-checked:text-white rounded-lg w-12 h-12 flex items-center justify-center">7</span>
+                    </label>
+                    <label class="flex items-center justify-center bg-red-100 rounded-lg p-3 cursor-pointer hover:bg-red-200 transition">
+                        <input type="checkbox" name="mistakes_tables" value="8" class="sr-only peer">
+                        <span class="text-2xl font-bold text-red-700 peer-checked:bg-red-600 peer-checked:text-white rounded-lg w-12 h-12 flex items-center justify-center">8</span>
+                    </label>
+                    <label class="flex items-center justify-center bg-red-100 rounded-lg p-3 cursor-pointer hover:bg-red-200 transition">
+                        <input type="checkbox" name="mistakes_tables" value="9" class="sr-only peer">
+                        <span class="text-2xl font-bold text-red-700 peer-checked:bg-red-600 peer-checked:text-white rounded-lg w-12 h-12 flex items-center justify-center">9</span>
+                    </label>
+                </div>
+                <button type="button" id="select-all-mistakes" class="mt-3 text-red-600 hover:text-red-700 font-medium text-sm">
+                    Выбрать все
+                </button>
+            </div>
+            
+            <button onclick="startMistakesMode()" class="w-full bg-purple-600 text-white text-xl font-bold py-4 rounded-full hover:bg-purple-700 transition transform hover:scale-105 shadow-lg">
+                Начать тренировку ошибок
+            </button>
+            
+            <div id="no-mistakes" class="hidden mt-4 bg-blue-100 border-2 border-blue-500 rounded-xl p-4 text-blue-700">
+                <div class="text-2xl mb-2">✨</div>
+                <div class="font-bold">Ошибок пока нет!</div>
+                <div class="text-sm mt-2">Сначала сделай несколько ошибок в обычной тренировке, а потом сюда приходи повторять.</div>
+                <button onclick="showPracticeMode()" class="mt-3 bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition text-sm">
+                    Попробовать обычную тренировку
+                </button>
+            </div>
+            
+            <button onclick="showPracticeMode()" class="w-full mt-4 bg-gray-200 text-gray-700 py-3 rounded-full hover:bg-gray-300 transition">
+                ← Назад к выбору режима
+            </button>
+        </div>
+        
+        <!-- Challenge Mode -->
+        <div class="bg-white rounded-2xl shadow-lg p-6" id="challenge-section" style="display: none;">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">🏆 Испытание</h2>
+            <p class="text-gray-600 mb-6">20 вопросов за 2 минуты. Выбери таблицы и проверь свои знания!</p>
+            
+            <div class="mb-6">
+                <label class="block text-gray-700 font-medium mb-3">Выбери таблицы:</label>
+                <div class="grid grid-cols-5 gap-3">
+                    <label class="flex items-center justify-center bg-yellow-100 rounded-lg p-3 cursor-pointer hover:bg-yellow-200 transition">
+                        <input type="checkbox" name="challenge_tables" value="2" class="sr-only peer" checked>
+                        <span class="text-2xl font-bold text-yellow-700 peer-checked:bg-yellow-600 peer-checked:text-white rounded-lg w-12 h-12 flex items-center justify-center">2</span>
+                    </label>
+                    <label class="flex items-center justify-center bg-yellow-100 rounded-lg p-3 cursor-pointer hover:bg-yellow-200 transition">
+                        <input type="checkbox" name="challenge_tables" value="3" class="sr-only peer" checked>
+                        <span class="text-2xl font-bold text-yellow-700 peer-checked:bg-yellow-600 peer-checked:text-white rounded-lg w-12 h-12 flex items-center justify-center">3</span>
+                    </label>
+                    <label class="flex items-center justify-center bg-yellow-100 rounded-lg p-3 cursor-pointer hover:bg-yellow-200 transition">
+                        <input type="checkbox" name="challenge_tables" value="4" class="sr-only peer" checked>
+                        <span class="text-2xl font-bold text-yellow-700 peer-checked:bg-yellow-600 peer-checked:text-white rounded-lg w-12 h-12 flex items-center justify-center">4</span>
+                    </label>
+                    <label class="flex items-center justify-center bg-yellow-100 rounded-lg p-3 cursor-pointer hover:bg-yellow-200 transition">
+                        <input type="checkbox" name="challenge_tables" value="5" class="sr-only peer" checked>
+                        <span class="text-2xl font-bold text-yellow-700 peer-checked:bg-yellow-600 peer-checked:text-white rounded-lg w-12 h-12 flex items-center justify-center">5</span>
+                    </label>
+                    <label class="flex items-center justify-center bg-yellow-100 rounded-lg p-3 cursor-pointer hover:bg-yellow-200 transition">
+                        <input type="checkbox" name="challenge_tables" value="6" class="sr-only peer" checked>
+                        <span class="text-2xl font-bold text-yellow-700 peer-checked:bg-yellow-600 peer-checked:text-white rounded-lg w-12 h-12 flex items-center justify-center">6</span>
+                    </label>
+                    <label class="flex items-center justify-center bg-yellow-100 rounded-lg p-3 cursor-pointer hover:bg-yellow-200 transition">
+                        <input type="checkbox" name="challenge_tables" value="7" class="sr-only peer" checked>
+                        <span class="text-2xl font-bold text-yellow-700 peer-checked:bg-yellow-600 peer-checked:text-white rounded-lg w-12 h-12 flex items-center justify-center">7</span>
+                    </label>
+                    <label class="flex items-center justify-center bg-yellow-100 rounded-lg p-3 cursor-pointer hover:bg-yellow-200 transition">
+                        <input type="checkbox" name="challenge_tables" value="8" class="sr-only peer" checked>
+                        <span class="text-2xl font-bold text-yellow-700 peer-checked:bg-yellow-600 peer-checked:text-white rounded-lg w-12 h-12 flex items-center justify-center">8</span>
+                    </label>
+                    <label class="flex items-center justify-center bg-yellow-100 rounded-lg p-3 cursor-pointer hover:bg-yellow-200 transition">
+                        <input type="checkbox" name="challenge_tables" value="9" class="sr-only peer" checked>
+                        <span class="text-2xl font-bold text-yellow-700 peer-checked:bg-yellow-600 peer-checked:text-white rounded-lg w-12 h-12 flex items-center justify-center">9</span>
+                    </label>
+                </div>
+                <button type="button" id="select-all-challenge" class="mt-3 text-yellow-600 hover:text-yellow-700 font-medium text-sm">
+                    Выбрать все
+                </button>
+            </div>
+            
+            <button onclick="startChallengeMode()" class="w-full bg-purple-600 text-white text-xl font-bold py-4 rounded-full hover:bg-purple-700 transition transform hover:scale-105 shadow-lg">
+                Начать испытание
+            </button>
+            
+            <button onclick="showPracticeMode()" class="w-full mt-4 bg-gray-200 text-gray-700 py-3 rounded-full hover:bg-gray-300 transition">
+                ← Назад к выбору режима
+            </button>
+        </div>
+        
+        <!-- Mode Selection Cards (shown when no mode selected) -->
+        <div id="mode-selection" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <button onclick="showTimedMode()" class="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition transform hover:-translate-y-1 text-left">
+                <div class="text-3xl mb-2">⏱</div>
+                <h3 class="text-xl font-bold text-gray-800 mb-1">На время</h3>
+                <p class="text-gray-600 text-sm">Реши как можно больше за ограниченное время</p>
+            </button>
+            
+            <button onclick="showMistakesMode()" class="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition transform hover:-translate-y-1 text-left">
+                <div class="text-3xl mb-2">🔥</div>
+                <h3 class="text-xl font-bold text-gray-800 mb-1">Мои ошибки</h3>
+                <p class="text-gray-600 text-sm">Повтори сложные примеры</p>
+            </button>
+            
+            <button onclick="showChallengeMode()" class="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition transform hover:-translate-y-1 text-left">
+                <div class="text-3xl mb-2">🏆</div>
+                <h3 class="text-xl font-bold text-gray-800 mb-1">Испытание</h3>
+                <p class="text-gray-600 text-sm">20 вопросов за 2 минуты, проверка знаний</p>
+            </button>
+            
+            <button onclick="showPracticeMode()" class="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition transform hover:-translate-y-1 text-left border-2 border-purple-200">
+                <div class="text-3xl mb-2">🎯</div>
+                <h3 class="text-xl font-bold text-gray-800 mb-1">Обычная тренировка</h3>
+                <p class="text-gray-600 text-sm">Выбери таблицы и количество вопросов</p>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+// Check URL parameters and show appropriate mode
+document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const mode = urlParams.get('mode');
+    
+    if (mode === 'timed') {
+        showTimedMode();
+    } else if (mode === 'mistakes') {
+        showMistakesMode();
+    } else if (mode === 'challenge') {
+        showChallengeMode();
+    } else {
+        showPracticeMode();
+    }
+});
+
+function showPracticeMode() {
+    document.getElementById('practice-section').style.display = 'block';
+    document.getElementById('timed-section').style.display = 'none';
+    document.getElementById('mistakes-section').style.display = 'none';
+    document.getElementById('challenge-section').style.display = 'none';
+    document.getElementById('mode-selection').style.display = 'grid';
+}
+
+function showTimedMode() {
+    document.getElementById('practice-section').style.display = 'none';
+    document.getElementById('timed-section').style.display = 'block';
+    document.getElementById('mistakes-section').style.display = 'none';
+    document.getElementById('challenge-section').style.display = 'none';
+    document.getElementById('mode-selection').style.display = 'none';
+}
+
+function showMistakesMode() {
+    document.getElementById('practice-section').style.display = 'none';
+    document.getElementById('timed-section').style.display = 'none';
+    document.getElementById('mistakes-section').style.display = 'block';
+    document.getElementById('challenge-section').style.display = 'none';
+    document.getElementById('mode-selection').style.display = 'none';
+    
+    // Check if user has mistakes for selected tables
+    checkMistakes();
+    
+    // Re-check when table selection changes
+    document.querySelectorAll('input[name="mistakes_tables"]').forEach(cb => {
+        cb.addEventListener('change', checkMistakes);
+    });
+}
+
+function checkMistakes() {
+    const checkboxes = document.querySelectorAll('input[name="mistakes_tables"]:checked');
+    const tables = Array.from(checkboxes).map(cb => cb.value);
+    const params = tables.length > 0 ? `?tables=${tables.join(',')}` : '';
+    
+    fetch(`/api/progress/check-mistakes${params}`)
+        .then(response => response.json())
+        .then(data => {
+            const noMistakesDiv = document.getElementById('no-mistakes');
+            const startButton = document.querySelector('#mistakes-section button[onclick="startMistakesMode()"]');
+            if (!data.has_mistakes) {
+                noMistakesDiv.classList.remove('hidden');
+                startButton.disabled = true;
+            } else {
+                noMistakesDiv.classList.add('hidden');
+                startButton.disabled = false;
+            }
+        })
+        .catch(() => {
+            // If endpoint doesn't exist, just show the button
+            const startButton = document.querySelector('#mistakes-section button[onclick="startMistakesMode()"]');
+            startButton.disabled = false;
+        });
+}
+
+function showChallengeMode() {
+    document.getElementById('practice-section').style.display = 'none';
+    document.getElementById('timed-section').style.display = 'none';
+    document.getElementById('mistakes-section').style.display = 'none';
+    document.getElementById('challenge-section').style.display = 'block';
+    document.getElementById('mode-selection').style.display = 'none';
+}
+
+document.getElementById('select-all').addEventListener('click', function() {
+    const checkboxes = document.querySelectorAll('input[name="tables"]');
+    const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+    checkboxes.forEach(cb => cb.checked = !allChecked);
+});
+
+document.getElementById('select-all-timed').addEventListener('click', function() {
+    const checkboxes = document.querySelectorAll('input[name="timed_tables"]');
+    const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+    checkboxes.forEach(cb => cb.checked = !allChecked);
+});
+
+document.getElementById('select-all-challenge').addEventListener('click', function() {
+    const checkboxes = document.querySelectorAll('input[name="challenge_tables"]');
+    const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+    checkboxes.forEach(cb => cb.checked = !allChecked);
+});
+
+document.getElementById('select-all-mistakes').addEventListener('click', function() {
+    const checkboxes = document.querySelectorAll('input[name="mistakes_tables"]');
+    const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+    checkboxes.forEach(cb => cb.checked = !allChecked);
+});
+
+document.getElementById('training-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const tables = formData.getAll('tables').map(Number);
+    const questionCount = parseInt(formData.get('question_count'));
+    
+    if (tables.length === 0) {
+        const errorDiv = document.getElementById('error-message');
+        errorDiv.textContent = 'Пожалуйста, выбери хотя бы одну таблицу!';
+        errorDiv.classList.remove('hidden');
+        return;
+    }
+    
+    fetch('/api/training', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            mode: 'practice',
+            tables: tables,
+            question_count: questionCount
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.session_id) {
+            window.location.href = `/train/${data.session_id}`;
+        } else {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.textContent = 'Ошибка при создании тренировки. Попробуй ещё раз.';
+            errorDiv.classList.remove('hidden');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        const errorDiv = document.getElementById('error-message');
+        errorDiv.textContent = 'Ошибка соединения. Проверь интернет и попробуй ещё раз.';
+        errorDiv.classList.remove('hidden');
+    });
+});
+
+function startTimedMode(seconds) {
+    const checkboxes = document.querySelectorAll('input[name="timed_tables"]:checked');
+    const tables = Array.from(checkboxes).map(cb => parseInt(cb.value));
+    
+    if (tables.length === 0) {
+        alert('Пожалуйста, выбери хотя бы одну таблицу!');
+        return;
+    }
+    
+    fetch('/api/training', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            mode: 'timed',
+            tables: tables,
+            question_count: 100,
+            time_limit: seconds
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.session_id) {
+            window.location.href = `/train/${data.session_id}`;
+        }
+    });
+}
+
+function startMistakesMode() {
+    const checkboxes = document.querySelectorAll('input[name="mistakes_tables"]:checked');
+    const tables = Array.from(checkboxes).map(cb => parseInt(cb.value));
+    
+    if (tables.length === 0) {
+        alert('Пожалуйста, выбери хотя бы одну таблицу!');
+        return;
+    }
+    
+    fetch('/api/training', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            mode: 'mistakes',
+            tables: tables,
+            question_count: 10
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.session_id) {
+            window.location.href = `/train/${data.session_id}`;
+        }
+    });
+}
+
+function startChallengeMode() {
+    const checkboxes = document.querySelectorAll('input[name="challenge_tables"]:checked');
+    const tables = Array.from(checkboxes).map(cb => parseInt(cb.value));
+    
+    if (tables.length === 0) {
+        alert('Пожалуйста, выбери хотя бы одну таблицу!');
+        return;
+    }
+    
+    fetch('/api/training', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            mode: 'challenge',
+            tables: tables,
+            question_count: 20,
+            time_limit: 120
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.session_id) {
+            window.location.href = `/train/${data.session_id}`;
+        }
+    });
+}
+</script>
+{% endblock %}

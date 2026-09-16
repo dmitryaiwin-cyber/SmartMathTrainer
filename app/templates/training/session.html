@@ -1,0 +1,266 @@
+{% extends "base.html" %}
+
+{% block title %}Тренировка{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <div class="bg-white rounded-2xl shadow-lg p-8">
+        <div class="mb-6">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-gray-600 font-medium">Вопрос <span id="question-number">1</span> из <span id="total-questions">10</span></span>
+                <div class="flex items-center space-x-4">
+                    <span id="timer-display" class="hidden text-orange-500 font-bold text-xl">⏱ <span id="timer">00:00</span></span>
+                    <span class="text-orange-500 font-bold">🔥 Серия: <span id="streak">0</span></span>
+                </div>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-4">
+                <div id="progress-bar" class="bg-purple-600 h-4 rounded-full transition-all duration-300" style="width: 10%"></div>
+            </div>
+        </div>
+        
+        <div id="question-container" class="text-center mb-8">
+            <div class="flex justify-center items-center mb-4">
+                <div id="question-display" class="text-6xl md:text-7xl font-bold text-gray-800">
+                    Загрузка...
+                </div>
+                <button id="speak-btn" class="ml-4 text-3xl hover:scale-110 transition" aria-label="Озвучить вопрос" title="Озвучить вопрос">
+                    🔊
+                </button>
+            </div>
+            
+            <form id="answer-form">
+                <input 
+                    type="number" 
+                    id="answer-input" 
+                    name="answer" 
+                    class="w-full text-4xl text-center py-4 border-2 border-purple-300 rounded-xl focus:border-purple-600 focus:outline-none transition"
+                    placeholder="?"
+                    required
+                    autofocus
+                    aria-label="Ответ"
+                >
+                
+                <button type="submit" class="w-full mt-6 bg-purple-600 text-white text-2xl font-bold py-4 rounded-full hover:bg-purple-700 transition transform hover:scale-105 shadow-lg">
+                    Ответить
+                </button>
+            </form>
+        </div>
+        
+        <div id="feedback-container"></div>
+    </div>
+</div>
+
+<script>
+let questionStartTime = Date.now();
+let timerInterval = null;
+let timeLeft = 0;
+
+function playSound(type) {
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    if (type === 'correct') {
+        oscillator.frequency.value = 523.25;
+        oscillator.type = 'sine';
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.3);
+    } else if (type === 'wrong') {
+        oscillator.frequency.value = 220;
+        oscillator.type = 'square';
+        gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.2);
+    }
+}
+
+function startTimer(seconds) {
+    timeLeft = seconds;
+    const timerDisplay = document.getElementById('timer-display');
+    const timerElement = document.getElementById('timer');
+    
+    timerDisplay.classList.remove('hidden');
+    
+    const updateDisplay = () => {
+        const minutes = Math.floor(timeLeft / 60);
+        const secs = timeLeft % 60;
+        timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    };
+    
+    updateDisplay();
+    
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        updateDisplay();
+        
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            finishTraining();
+        }
+    }, 1000);
+}
+
+function stopTimer() {
+    if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+}
+
+function finishTraining() {
+    stopTimer();
+    fetch(`/api/training/{{ session_id }}/finish`, { method: 'POST' })
+        .then(response => response.json())
+        .then(data => {
+            window.location.href = `/result/{{ session_id }}`;
+        });
+}
+
+document.getElementById('answer-input').addEventListener('focus', function() {
+    questionStartTime = Date.now();
+});
+
+document.getElementById('answer-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const answerInput = document.getElementById('answer-input');
+    const answer = parseInt(answerInput.value);
+    const responseTime = (Date.now() - questionStartTime) / 1000;
+    
+    if (isNaN(answer)) {
+        answerInput.focus();
+        return;
+    }
+    
+    // Disable form during submission
+    const submitButton = this.querySelector('button[type="submit"]');
+    submitButton.disabled = true;
+    submitButton.textContent = 'Отправка...';
+    
+    fetch(`/api/training/{{ session_id }}/answer`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            answer: answer,
+            response_time: responseTime
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        return response.text();
+    })
+    .then(html => {
+        const feedbackContainer = document.getElementById('feedback-container');
+        feedbackContainer.innerHTML = html;
+        
+        // Re-enable form
+        submitButton.disabled = false;
+        submitButton.textContent = 'Ответить';
+        
+        // Play sound based on feedback
+        if (html.includes('Правильно')) {
+            playSound('correct');
+        } else if (html.includes('Неверно')) {
+            playSound('wrong');
+        }
+        
+        // Check if training is finished
+        if (html.includes('Посмотреть результаты') || html.includes('training/feedback_finished')) {
+            setTimeout(() => {
+                window.location.href = `/result/{{ session_id }}`;
+            }, 2000);
+        } else if (html.includes('No more questions') || html.includes('finished')) {
+            // Last question was answered, redirect to results
+            setTimeout(() => {
+                window.location.href = `/result/{{ session_id }}`;
+            }, 1500);
+        } else {
+            setTimeout(() => {
+                loadNextQuestion();
+            }, 1500);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        
+        // Re-enable form
+        submitButton.disabled = false;
+        submitButton.textContent = 'Ответить';
+        
+        const feedbackContainer = document.getElementById('feedback-container');
+        feedbackContainer.innerHTML = '<div class="bg-red-100 border-2 border-red-500 rounded-xl p-4 text-red-700">Ошибка при отправке ответа. Попробуй ещё раз.</div>';
+        
+        // Focus back on input for retry
+        setTimeout(() => answerInput.focus(), 100);
+    });
+});
+
+function loadNextQuestion() {
+    fetch(`/api/training/{{ session_id }}/question`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.finished) {
+                finishTraining();
+                return;
+            }
+            
+            // Store current question data
+            window.currentQuestion = data.question;
+            
+            document.getElementById('question-display').textContent = 
+                `${data.question.left_operand} × ${data.question.right_operand} = ?`;
+            document.getElementById('question-number').textContent = data.question_number;
+            document.getElementById('total-questions').textContent = data.total_questions;
+            document.getElementById('streak').textContent = data.streak;
+            
+            const progress = (data.question_number / data.total_questions) * 100;
+            document.getElementById('progress-bar').style.width = progress + '%';
+            
+            document.getElementById('answer-input').value = '';
+            document.getElementById('answer-input').focus();
+            document.getElementById('feedback-container').innerHTML = '';
+            
+            questionStartTime = Date.now();
+            
+            // Start timer if this is the first question and it's timed mode
+            if (data.question_number === 1 && data.time_limit && !timerInterval) {
+                startTimer(data.time_limit);
+            }
+        });
+}
+
+document.getElementById('answer-input').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('answer-form').dispatchEvent(new Event('submit'));
+    }
+});
+
+document.getElementById('speak-btn').addEventListener('click', function() {
+    const questionText = document.getElementById('question-display').textContent;
+    const match = questionText.match(/(\d+)\s*×\s*(\d+)\s*=\s*\?/);
+    if (match) {
+        const left = parseInt(match[1]);
+        const right = parseInt(match[2]);
+        const answer = left * right;
+        if ('speechSynthesis' in window) {
+            const text = `${left} умножить на ${right} равно ${answer}`;
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'ru-RU';
+            utterance.rate = 0.8;
+            window.speechSynthesis.speak(utterance);
+        }
+    }
+});
+
+loadNextQuestion();
+</script>
+{% endblock %}
