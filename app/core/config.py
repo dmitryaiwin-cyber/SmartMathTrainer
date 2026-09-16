@@ -6,6 +6,7 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     database_url: str = "sqlite:///./math_project.db"
     secret_key: str = "dev-secret-key-change-in-production"
+    admin_key: str | None = None
     debug: bool = False
     
     model_config = {"env_file": ".env", "case_sensitive": False}
