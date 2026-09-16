@@ -44,7 +44,7 @@ function getSoundEnabled() {
 // Feedback display delays (ms), configurable on the settings page
 function getFeedbackDelays() {
     return {
-        correct: parseInt(localStorage.getItem('feedbackDelayCorrect')) || 1500,
+        correct: parseInt(localStorage.getItem('feedbackDelayCorrect')) || 500,
         wrong: parseInt(localStorage.getItem('feedbackDelayWrong')) || 1000
     };
 }
@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     const delayCorrect = document.getElementById('delay-correct');
     if (delayCorrect) {
-        delayCorrect.value = localStorage.getItem('feedbackDelayCorrect') || '1500';
+        delayCorrect.value = localStorage.getItem('feedbackDelayCorrect') || '500';
         delayCorrect.addEventListener('change', function() {
             localStorage.setItem('feedbackDelayCorrect', this.value);
         });
