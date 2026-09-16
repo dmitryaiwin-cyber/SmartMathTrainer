@@ -1,0 +1,15 @@
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=sqlite:////app/db/math_project.db
+      - SECRET_KEY=production-secret-key-change-this
+      - DEBUG=False
+    volumes:
+      - app_data:/app/db
+    restart: unless-stopped
+
+volumes:
+  app_data:
