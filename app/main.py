@@ -71,6 +71,21 @@ app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 templates = Jinja2Templates(directory="app/templates")
 
+
+@app.middleware("http")
+async def session_cookie_middleware(request: Request, call_next):
+    response = await call_next(request)
+    session_id = getattr(request.state, "session_id", None)
+    if session_id and request.cookies.get("session_id") != session_id:
+        response.set_cookie(
+            key="session_id",
+            value=session_id,
+            max_age=60 * 60 * 24 * 365,
+            httponly=True,
+            samesite="lax",
+        )
+    return response
+
 app.include_router(pages.router)
 app.include_router(training.router)
 app.include_router(progress.router)

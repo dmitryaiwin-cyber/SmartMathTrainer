@@ -24,25 +24,25 @@ def get_or_create_user(request: Request, db: Session) -> User:
         db.commit()
         db.refresh(user)
     
-    return user, session_id
+    request.state.session_id = session_id
+    return user
 
 
 @router.get("/", response_class=HTMLResponse)
 async def home(request: Request, db: Session = Depends(get_db)):
-    user, session_id = get_or_create_user(request, db)
-    response = templates.TemplateResponse(request, "index.html", {"request": request})
-    response.set_cookie(key="session_id", value=session_id, httponly=True)
-    return response
+    get_or_create_user(request, db)
+    return templates.TemplateResponse(request, "index.html", {"request": request})
 
 
 @router.get("/train", response_class=HTMLResponse)
 async def train_page(request: Request, db: Session = Depends(get_db)):
-    user, session_id = get_or_create_user(request, db)
+    get_or_create_user(request, db)
     return templates.TemplateResponse(request, "training/index.html", {"request": request})
 
 
 @router.get("/train/{session_id}", response_class=HTMLResponse)
 async def training_session(request: Request, session_id: int, db: Session = Depends(get_db)):
+    get_or_create_user(request, db)
     return templates.TemplateResponse(request, "training/session.html", {
         "request": request,
         "session_id": session_id
@@ -51,6 +51,7 @@ async def training_session(request: Request, session_id: int, db: Session = Depe
 
 @router.get("/result/{session_id}", response_class=HTMLResponse)
 async def result_page(request: Request, session_id: int, db: Session = Depends(get_db)):
+    get_or_create_user(request, db)
     # Get session to check if it exists and get basic info
     from app.models.training import TrainingSession
     session = db.query(TrainingSession).filter(TrainingSession.id == session_id).first()
@@ -67,7 +68,7 @@ async def result_page(request: Request, session_id: int, db: Session = Depends(g
 
 @router.get("/progress", response_class=HTMLResponse)
 async def progress_page(request: Request, db: Session = Depends(get_db)):
-    user, session_id = get_or_create_user(request, db)
+    user = get_or_create_user(request, db)
     stats_service = StatisticsService(db)
     progress = stats_service.get_user_progress(user.id)
     table_progress = stats_service.get_table_progress(user.id)
@@ -81,13 +82,13 @@ async def progress_page(request: Request, db: Session = Depends(get_db)):
 
 @router.get("/table", response_class=HTMLResponse)
 async def table_page(request: Request, db: Session = Depends(get_db)):
-    user, session_id = get_or_create_user(request, db)
+    get_or_create_user(request, db)
     return templates.TemplateResponse(request, "table/index.html", {"request": request})
 
 
 @router.get("/table/{table_num}", response_class=HTMLResponse)
 async def table_detail(request: Request, table_num: int, db: Session = Depends(get_db)):
-    user, session_id = get_or_create_user(request, db)
+    get_or_create_user(request, db)
     table_data = [(table_num, i, table_num * i) for i in range(1, 11)]
     return templates.TemplateResponse(request, "table/detail.html", {
         "request": request,
@@ -98,5 +99,5 @@ async def table_detail(request: Request, table_num: int, db: Session = Depends(g
 
 @router.get("/settings", response_class=HTMLResponse)
 async def settings_page(request: Request, db: Session = Depends(get_db)):
-    user, session_id = get_or_create_user(request, db)
+    get_or_create_user(request, db)
     return templates.TemplateResponse(request, "settings/index.html", {"request": request})
