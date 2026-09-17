@@ -17,6 +17,7 @@ class TrainingSession(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, nullable=False, index=True)
     mode = Column(String, nullable=False)
+    operation_mode = Column(String, default="multiply", nullable=False)  # multiply, mixed, divide
     tables = Column(String)  # JSON string of selected tables
     question_count = Column(Integer, default=10)
     time_limit = Column(Integer, nullable=True)  # seconds for timed mode

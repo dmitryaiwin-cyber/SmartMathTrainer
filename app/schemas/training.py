@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import Optional, List
+from typing import Optional, List, Literal
 from datetime import datetime
 
 
@@ -8,6 +8,7 @@ class TrainingCreate(BaseModel):
     tables: List[int] = Field(default_factory=list, description="Selected multiplication tables")
     question_count: int = Field(default=10, ge=1, le=100)
     time_limit: Optional[int] = Field(default=None, ge=10, le=600, description="Time limit in seconds for timed mode")
+    operation_mode: Literal["multiply", "mixed", "divide"] = Field(default="multiply", description="Operations: multiply, mixed, divide")
 
 
 class TrainingResponse(BaseModel):

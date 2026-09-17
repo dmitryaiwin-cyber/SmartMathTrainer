@@ -49,7 +49,13 @@ class StatisticsService:
         progress_by_table = {}
         
         for stat in table_stats:
-            table_num = int(stat.question_key.split('x')[0])
+            # Keys: "9x6" for multiplication, "9d6" for division — table number is the prefix
+            if 'x' in stat.question_key:
+                table_num = int(stat.question_key.split('x')[0])
+            elif 'd' in stat.question_key:
+                table_num = int(stat.question_key.split('d')[0])
+            else:
+                continue
             if table_num not in progress_by_table:
                 progress_by_table[table_num] = {"attempts": 0, "correct": 0}
             progress_by_table[table_num]["attempts"] += stat.attempts

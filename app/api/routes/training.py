@@ -87,7 +87,7 @@ async def submit_answer(
         return f"<div class='bg-red-100 border-2 border-red-500 rounded-xl p-4 text-red-700'>Ошибка при обработке ответа</div>"
     
     if "error" in result:
-        return f"<div class='error'>{result['error']}</div>"
+        return f"<div class='bg-blue-100 border-2 border-blue-500 rounded-xl p-4 text-blue-700 text-center font-medium'>{result['error']}</div>"
     
     answered_count = result["question_number"]
     total_questions = result["total_questions"]
@@ -96,8 +96,12 @@ async def submit_answer(
     
     if is_finished:
         training_service.finish_session(session)
-        achievement_service = AchievementService(db)
-        achievements = achievement_service.check_achievements(user.id, session)
+        try:
+            achievement_service = AchievementService(db)
+            achievements = achievement_service.check_achievements(user.id, session)
+        except Exception as e:
+            logger.error(f"Error checking achievements: {e}")
+            achievements = []
         
         from fastapi.templating import Jinja2Templates
         templates = Jinja2Templates(directory="app/templates")

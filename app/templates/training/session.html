@@ -177,7 +177,7 @@ document.getElementById('answer-form').addEventListener('submit', function(e) {
             setTimeout(() => {
                 window.location.href = `/result/{{ session_id }}`;
             }, 2000);
-        } else if (html.includes('No more questions') || html.includes('finished')) {
+        } else if (html.includes('Вопросы закончились') || html.includes('finished')) {
             // Last question was answered, redirect to results
             setTimeout(() => {
                 window.location.href = `/result/{{ session_id }}`;
@@ -217,8 +217,9 @@ function loadNextQuestion() {
             // Store current question data
             window.currentQuestion = data.question;
             
+            const opSymbol = data.question.operator || '×';
             document.getElementById('question-display').textContent = 
-                `${data.question.left_operand} × ${data.question.right_operand} = ?`;
+                `${data.question.left_operand} ${opSymbol} ${data.question.right_operand} = ?`;
             document.getElementById('question-number').textContent = data.question_number;
             document.getElementById('total-questions').textContent = data.total_questions;
             document.getElementById('streak').textContent = data.streak;
@@ -248,13 +249,15 @@ document.getElementById('answer-input').addEventListener('keypress', function(e)
 
 document.getElementById('speak-btn').addEventListener('click', function() {
     const questionText = document.getElementById('question-display').textContent;
-    const match = questionText.match(/(\d+)\s*×\s*(\d+)\s*=\s*\?/);
+    const match = questionText.match(/(\d+)\s*([×÷])\s*(\d+)\s*=\s*\?/);
     if (match) {
         const left = parseInt(match[1]);
-        const right = parseInt(match[2]);
-        const answer = left * right;
+        const operator = match[2];
+        const right = parseInt(match[3]);
+        const answer = operator === '÷' ? left / right : left * right;
+        const opWord = operator === '÷' ? 'разделить на' : 'умножить на';
         if ('speechSynthesis' in window) {
-            const text = `${left} умножить на ${right} равно ${answer}`;
+            const text = `${left} ${opWord} ${right} равно ${answer}`;
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = 'ru-RU';
             utterance.rate = 0.8;

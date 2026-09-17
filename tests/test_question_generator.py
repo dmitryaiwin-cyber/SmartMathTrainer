@@ -133,3 +133,82 @@ def test_generate_mistake_questions_weighted(db_session):
     
     # 7x8 should appear more often due to higher mistake rate
     assert questions_7x8 > questions_6x7
+
+
+def test_generate_division_question(db_session):
+    session, user_id = db_session
+    generator = QuestionGenerator(session, user_id)
+
+    question = generator.generate_question([9], operation_mode="divide")
+
+    assert question["operator"] == "÷"
+    assert question["left_operand"] % question["right_operand"] == 0
+    assert question["answer"] * question["right_operand"] == question["left_operand"]
+    assert question["key"].endswith("d" + question["key"].split("d")[1])
+    # dividend must be within table 9 range
+    table, right = map(int, question["key"].split("d"))
+    assert table == 9
+    assert question["left_operand"] == table * right
+
+
+def test_generate_division_only_mode(db_session):
+    session, user_id = db_session
+    generator = QuestionGenerator(session, user_id)
+
+    questions = generator.generate_questions([3, 5], count=20, operation_mode="divide")
+
+    assert len(questions) == 20
+    for q in questions:
+        assert q["operator"] == "÷"
+        assert q["answer"] * q["right_operand"] == q["left_operand"]
+
+
+def test_generate_mixed_mode_has_both_operators(db_session):
+    session, user_id = db_session
+    generator = QuestionGenerator(session, user_id)
+
+    questions = generator.generate_questions([4], count=30, operation_mode="mixed")
+
+    operators = set(q["operator"] for q in questions)
+    assert operators == {"×", "÷"}
+
+
+def test_generate_mistake_questions_division(db_session):
+    session, user_id = db_session
+    generator = QuestionGenerator(session, user_id)
+
+    # Add a division mistake: key "9d6" means table 9, multiplier 6 (54 / 6 or 54 / 9)
+    stats = QuestionStats(
+        user_id=user_id,
+        question_key="9d6",
+        attempts=4,
+        correct_count=1,
+        wrong_count=3
+    )
+    session.add(stats)
+    session.commit()
+
+    questions = generator.generate_mistake_questions(count=3, operation_mode="divide")
+
+    assert len(questions) > 0
+    for q in questions:
+        assert q["operator"] == "÷"
+        assert q["key"] == "9d6"
+        assert q["answer"] * q["right_operand"] == q["left_operand"]
+
+
+def test_generate_mistake_questions_mode_filter(db_session):
+    session, user_id = db_session
+    generator = QuestionGenerator(session, user_id)
+
+    session.add(QuestionStats(user_id=user_id, question_key="9x6", attempts=4, correct_count=1, wrong_count=3))
+    session.add(QuestionStats(user_id=user_id, question_key="9d6", attempts=4, correct_count=1, wrong_count=3))
+    session.commit()
+
+    multiply_questions = generator.generate_mistake_questions(count=3, operation_mode="multiply")
+    divide_questions = generator.generate_mistake_questions(count=3, operation_mode="divide")
+    mixed_questions = generator.generate_mistake_questions(count=6, operation_mode="mixed")
+
+    assert all(q["operator"] == "×" for q in multiply_questions)
+    assert all(q["operator"] == "÷" for q in divide_questions)
+    assert len(mixed_questions) == 6

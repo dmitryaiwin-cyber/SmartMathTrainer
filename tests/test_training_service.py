@@ -226,3 +226,73 @@ def test_last_question_handling(db_session):
     # Should not have more questions
     question3 = training_service.get_current_question(training_session)
     assert question3 is None
+
+
+def test_operation_mode_persisted(db_session):
+    session, user_id = db_session
+    training_service = TrainingService(session)
+
+    training_data = TrainingCreate(mode="practice", tables=[9], question_count=5, operation_mode="divide")
+    training_session = training_service.create_session(user_id, training_data)
+
+    assert training_session.operation_mode == "divide"
+
+
+def test_operation_mode_default_multiply(db_session):
+    session, user_id = db_session
+    training_service = TrainingService(session)
+
+    training_data = TrainingCreate(mode="practice", tables=[2], question_count=5)
+    training_session = training_service.create_session(user_id, training_data)
+
+    assert training_session.operation_mode == "multiply"
+
+
+def test_division_session_questions(db_session):
+    session, user_id = db_session
+    training_service = TrainingService(session)
+
+    training_data = TrainingCreate(mode="practice", tables=[7], question_count=5, operation_mode="divide")
+    training_session = training_service.create_session(user_id, training_data)
+
+    question = training_service.get_current_question(training_session)
+
+    assert question["operator"] == "÷"
+    assert question["answer"] * question["right_operand"] == question["left_operand"]
+
+
+def test_division_wrong_answer_feedback(db_session):
+    session, user_id = db_session
+    training_service = TrainingService(session)
+
+    training_data = TrainingCreate(mode="practice", tables=[9], question_count=5, operation_mode="divide")
+    training_session = training_service.create_session(user_id, training_data)
+
+    question = training_service.get_current_question(training_session)
+    answer_data = AnswerRequest(answer=question["answer"] + 1, response_time=1.0)
+    result = training_service.submit_answer(training_session, answer_data)
+
+    assert result["is_correct"] == False
+    assert "÷" in result["feedback"]
+    assert str(question["answer"]) in result["feedback"]
+
+
+def test_division_question_stats_key(db_session):
+    session, user_id = db_session
+    training_service = TrainingService(session)
+
+    training_data = TrainingCreate(mode="practice", tables=[6], question_count=5, operation_mode="divide")
+    training_session = training_service.create_session(user_id, training_data)
+
+    question = training_service.get_current_question(training_session)
+    answer_data = AnswerRequest(answer=question["answer"], response_time=2.0)
+    training_service.submit_answer(training_session, answer_data)
+
+    stats = session.query(QuestionStats).filter(
+        QuestionStats.user_id == user_id,
+        QuestionStats.question_key == question["key"]
+    ).first()
+
+    assert stats is not None
+    assert "d" in stats.question_key
+    assert stats.correct_count == 1

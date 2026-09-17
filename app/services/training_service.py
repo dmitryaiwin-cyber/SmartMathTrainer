@@ -17,6 +17,7 @@ class TrainingService:
         session = TrainingSession(
             user_id=user_id,
             mode=training_data.mode,
+            operation_mode=training_data.operation_mode,
             tables=",".join(map(str, training_data.tables)) if training_data.tables else None,
             question_count=training_data.question_count,
             time_limit=training_data.time_limit
@@ -56,15 +57,16 @@ class TrainingService:
         # Generate new question and store it
         generator = QuestionGenerator(self.db, session.user_id)
         
+        tables = list(map(int, session.tables.split(","))) if session.tables else None
+        operation_mode = session.operation_mode or "multiply"
+        
         if session.mode == TrainingMode.MISTAKES:
-            tables = list(map(int, session.tables.split(","))) if session.tables else None
-            questions = generator.generate_mistake_questions(count=1, tables=tables)
+            questions = generator.generate_mistake_questions(count=1, tables=tables, operation_mode=operation_mode)
             if not questions:
                 return None
             question = questions[0]
         else:
-            tables = list(map(int, session.tables.split(","))) if session.tables else None
-            questions = generator.generate_questions(tables, count=1)
+            questions = generator.generate_questions(tables, count=1, operation_mode=operation_mode)
             question = questions[0] if questions else None
         
         if question:
@@ -77,7 +79,7 @@ class TrainingService:
         # Get current question BEFORE submitting answer
         current_question = self.get_current_question(session)
         if not current_question:
-            return {"error": "No more questions"}
+            return {"error": "Вопросы закончились"}
         
         is_correct = answer_data.answer == current_question["answer"]
         
@@ -99,15 +101,15 @@ class TrainingService:
         session.max_streak = max(session.max_streak, streak)
         
         # Store feedback before clearing current_question
-        feedback_text = "Правильно!" if is_correct else f"Неверно. {current_question['left_operand']} × {current_question['right_operand']} = {current_question['answer']}"
+        op_symbol = current_question.get("operator", "×")
+        feedback_text = "Правильно!" if is_correct else f"Неверно. {current_question['left_operand']} {op_symbol} {current_question['right_operand']} = {current_question['answer']}"
         
         # Clear current question so next one gets generated
         session.current_question = None
         
         self._update_question_stats(
             session.user_id,
-            current_question["left_operand"],
-            current_question["right_operand"],
+            current_question.get("key") or f"{current_question['left_operand']}x{current_question['right_operand']}",
             is_correct,
             answer_data.response_time
         )
@@ -145,8 +147,7 @@ class TrainingService:
         
         return streak
     
-    def _update_question_stats(self, user_id: int, left: int, right: int, is_correct: bool, response_time: Optional[float]):
-        key = f"{left}x{right}"
+    def _update_question_stats(self, user_id: int, key: str, is_correct: bool, response_time: Optional[float]):
         stats = self.db.query(QuestionStats).filter(
             QuestionStats.user_id == user_id,
             QuestionStats.question_key == key

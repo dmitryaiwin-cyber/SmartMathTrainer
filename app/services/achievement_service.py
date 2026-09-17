@@ -54,7 +54,9 @@ class AchievementService:
         
         new_achievements = []
         
-        total_solved = self.db.query(QuestionResult).join(TrainingSession).filter(
+        total_solved = self.db.query(QuestionResult).join(
+            TrainingSession, QuestionResult.session_id == TrainingSession.id
+        ).filter(
             TrainingSession.user_id == user_id
         ).count()
         
@@ -82,7 +84,9 @@ class AchievementService:
                 self._award_achievement(user_id, ach.id)
                 new_achievements.append(ach)
         
-        total_correct = self.db.query(QuestionResult).join(TrainingSession).filter(
+        total_correct = self.db.query(QuestionResult).join(
+            TrainingSession, QuestionResult.session_id == TrainingSession.id
+        ).filter(
             TrainingSession.user_id == user_id,
             QuestionResult.is_correct == 1
         ).count()
