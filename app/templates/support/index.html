@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}Развитие и поддержка проекта{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <h1 class="text-3xl font-bold text-gray-800 mb-8 text-center">Развитие и поддержка проекта</h1>
+    
+    <div class="bg-white rounded-2xl shadow-lg p-8 mb-6">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">💡 Есть идея? Напишите!</h2>
+        
+        <form id="idea-form">
+            <textarea 
+                id="idea-text" 
+                name="text" 
+                rows="4"
+                class="w-full border-2 border-purple-300 rounded-xl p-4 focus:border-purple-600 focus:outline-none transition resize-y"
+                placeholder="Например: добавьте таблицу деления..."
+                maxlength="2000"
+                required
+                aria-label="Ваша идея"
+            ></textarea>
+            
+            <button type="submit" class="w-full mt-4 bg-purple-600 text-white text-xl font-bold py-4 rounded-full hover:bg-purple-700 transition transform hover:scale-105 shadow-lg">
+                Отправить идею
+            </button>
+        </form>
+        
+        <div id="idea-success" class="hidden mt-4 bg-green-100 border-2 border-green-500 rounded-xl p-4 text-green-700 text-center font-bold">
+            ✓ Спасибо! Ваша идея отправлена.
+        </div>
+        <div id="idea-error" class="hidden mt-4 bg-red-100 border-2 border-red-500 rounded-xl p-4 text-red-700 text-center">
+            Не получилось отправить. Попробуйте ещё раз.
+        </div>
+    </div>
+    
+    <div class="bg-white rounded-2xl shadow-lg p-8">
+        <p class="text-lg text-gray-700 mb-6">
+            Этот сайт сделан с любовью к детям. Он бесплатный, без рекламы, поддерживается и развивается за свой счёт. Ваша поддержка поможет и дальше оставаться ему таким.
+        </p>
+        
+        <p class="text-gray-700 mb-4">
+            Вот ссылка для перевода без комиссии и из любого банка:
+        </p>
+        <a href="https://finance.ozon.ru/apps/sbp/ozonbankpay/01a0adfa-7ff9-79ed-a2c8-e68286a158c2" target="_blank" rel="noopener" class="inline-block bg-purple-600 text-white font-bold py-3 px-6 rounded-full hover:bg-purple-700 transition mb-4 break-all">
+            Перевести через Ozon Банк
+        </a>
+        <p class="text-gray-700 mb-6">
+            Получатель: Петернев Дмитрий Анатольевич.<br>
+            Или по QR коду:
+        </p>
+        
+        <div class="flex justify-center">
+            <img src="/static/images/qr-donate.jpg" alt="QR-код для перевода" class="w-64 h-64 rounded-xl shadow-md">
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('idea-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const textarea = document.getElementById('idea-text');
+    const text = textarea.value.trim();
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const successDiv = document.getElementById('idea-success');
+    const errorDiv = document.getElementById('idea-error');
+    
+    successDiv.classList.add('hidden');
+    errorDiv.classList.add('hidden');
+    
+    if (text.length < 3) {
+        errorDiv.textContent = 'Напишите чуть подробнее — хотя бы пару слов.';
+        errorDiv.classList.remove('hidden');
+        return;
+    }
+    
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Отправка...';
+    
+    fetch('/api/ideas', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: text })
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Request failed');
+        return response.json();
+    })
+    .then(() => {
+        textarea.value = '';
+        successDiv.classList.remove('hidden');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Отправить идею';
+    })
+    .catch(() => {
+        errorDiv.textContent = 'Не получилось отправить. Попробуйте ещё раз.';
+        errorDiv.classList.remove('hidden');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Отправить идею';
+    });
+});
+</script>
+{% endblock %}

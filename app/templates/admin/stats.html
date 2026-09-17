@@ -101,5 +101,24 @@
         <p class="text-gray-600">Сессий пока не было</p>
         {% endif %}
     </div>
+    
+    <div class="bg-white rounded-xl shadow-lg p-6 mt-8">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">💡 Идеи пользователей</h2>
+        {% if suggestions %}
+        <div class="space-y-4">
+            {% for s in suggestions %}
+            <div class="bg-purple-50 rounded-lg p-4">
+                <div class="text-sm text-gray-500 mb-1">
+                    {{ s.created_at.strftime('%d.%m.%Y %H:%M') }}
+                    {% if s.user_id %}· пользователь #{{ s.user_id }}{% else %}· аноним{% endif %}
+                </div>
+                <div class="text-gray-800 whitespace-pre-wrap">{{ s.text }}</div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-gray-600">Идей пока нет</p>
+        {% endif %}
+    </div>
 </div>
 {% endblock %}

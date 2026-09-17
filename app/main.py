@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from contextlib import asynccontextmanager
 from app.db.database import engine, Base, get_db
 from app.core.config import settings
-from app.api.routes import pages, training, progress, settings as settings_routes, admin
+from app.api.routes import pages, training, progress, settings as settings_routes, admin, support
 from app.services.achievement_service import AchievementService
 import logging
 
@@ -91,6 +91,7 @@ app.include_router(training.router)
 app.include_router(progress.router)
 app.include_router(settings_routes.router, prefix="/api")
 app.include_router(admin.router)
+app.include_router(support.router)
 
 
 @app.exception_handler(404)

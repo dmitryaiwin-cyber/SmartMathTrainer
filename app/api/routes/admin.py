@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 from app.core.config import settings
 from app.db.database import get_db
 from app.models.question import QuestionResult
+from app.models.suggestion import Suggestion
 from app.models.training import TrainingSession
 from app.models.user import User
 
@@ -60,6 +61,13 @@ async def admin_stats(request: Request, db: Session = Depends(get_db)):
         .all()
     )
 
+    suggestions = (
+        db.query(Suggestion)
+        .order_by(Suggestion.created_at.desc())
+        .limit(50)
+        .all()
+    )
+
     return templates.TemplateResponse(request, "admin/stats.html", {
         "request": request,
         "total_users": total_users,
@@ -73,4 +81,5 @@ async def admin_stats(request: Request, db: Session = Depends(get_db)):
         "mode_stats": mode_stats,
         "mode_names": MODE_NAMES,
         "recent_sessions": recent_sessions,
+        "suggestions": suggestions,
     })

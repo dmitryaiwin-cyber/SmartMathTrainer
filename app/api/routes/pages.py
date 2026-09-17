@@ -101,3 +101,9 @@ async def table_detail(request: Request, table_num: int, db: Session = Depends(g
 async def settings_page(request: Request, db: Session = Depends(get_db)):
     get_or_create_user(request, db)
     return templates.TemplateResponse(request, "settings/index.html", {"request": request})
+
+
+@router.get("/support", response_class=HTMLResponse)
+async def support_page(request: Request, db: Session = Depends(get_db)):
+    get_or_create_user(request, db)
+    return templates.TemplateResponse(request, "support/index.html", {"request": request})
